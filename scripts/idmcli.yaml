@@ -1,0 +1,42 @@
+oigDBURL :  ${oigDBURL}
+oigDBSysUser : ${oigDBSysUser}
+oigDBSysPassword : ${oigDBSysPassword}
+# ##########################################
+# # Chose credentials for OIG Domain and Schema
+# ##########################################
+oigDBUser : ${oigDBUser}
+oigDBPassword : ${oigDBPassword}
+oigDomainUser : ${oigDomainUser}
+oigDomainPassword : ${oigDomainPassword}
+# ##########################################
+# # Your Docker Rgeistry details
+# ########################################## 
+dockerServer: iad.ocir.io
+dockerEmail: pratyush.dash@oracle.com
+dockerUserName: idkgvfvqincr/pratyushdash
+dockerPasssword: HoyAo<qVl<6C3EaNYc0T
+imagePullSecretName: pratyush-docker
+# ##########################################
+# # Storage Mount parameters for Domain Home
+# ##########################################
+weblogicDomainStorageType: NFS
+weblogicDomainStorageNFSServer: ${weblogicDomainStorageNFSServer}
+weblogicDomainStoragePath: ${weblogicDomainStoragePath}
+# ##########################################
+# # Common Parameters, Can use these Defaults
+# ###########################################
+operatorNamespace : operator
+operatorImage : ${operatorImage}
+oigNamespace : oigcluster
+traefiknamespace : traefik
+operatorServiceAccountName : op-sa
+oigDomainUUID : oigcluster
+image : ${image}
+operatorDownloadDir: /home/opc/idmcli/operator
+operatorHelmReleaseName: wls-operator-oig
+operatorZipURL: ${operatorZipURL}
+ingressHostName :
+ingressSvcType: ${ingressSvcType}
+ingressMode: ${ingressMode}
+ingressProvider: ${ingressProvider}
+nginxnamespace: ${nginxnamespace}

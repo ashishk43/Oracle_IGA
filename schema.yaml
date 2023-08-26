@@ -1,0 +1,354 @@
+title: Oracle Identity Governance Terraform Input Variables
+description: Oracle Identity Governance Terraform Input Variables
+schemaVersion: 1.1.0
+version: "20200114"
+allowViewState: true
+groupings:
+  - title: "Tenancy Details"
+    variables:
+      - ${tenancy_ocid}
+      - ${compartment_ocid}
+      - ${region}
+      - ${compartment_name}
+
+  - title: "OKE"
+    variables:
+      - ${cluster_name}
+      - ${cluster_options_add_ons_is_kubernetes_dashboard_enabled}
+      - ${cluster_options_add_ons_is_tiller_enabled}
+      - ${cluster_options_kubernetes_network_config_pods_cidr}
+      - ${cluster_options_kubernetes_network_config_services_cidr}
+      - ${node_pool_initial_node_labels_key}
+      - ${node_pool_initial_node_labels_value}
+      - ${node_pool_name}
+      - ${node_pool_node_image_name}
+      - ${node_pool_node_shape}
+      - ${number_of_nodes}
+      - ${lb_cidr}
+      - ${nodepools_cidr}
+      - ${worker_mode}
+      - ${cluster_kube_config_expiration}
+      - ${cluster_kube_config_token_version}
+
+  - title: "Hidden Variables"
+    visible: false
+    variables:
+      - ${vcn_dns_label}
+      - ${vcn_cidr}
+      - ${newbits}
+      - ${subnets}
+      - ${marketplace_source_images}
+
+  - title: "Bastion - Compute Nodes"
+    variables:
+      - ${bastion_shape}
+
+
+  - title: "IDM Deployment Parameters"
+    variables:
+      - ${helm_version}
+      - ${create_bastion}
+      - ${install_helm}
+      - ${idm_cli_object_storage_url}
+      - ${idm_cli_object_storage_url}
+      - ${oig_db_url}
+      - ${oig_db_sys_user}
+      - ${oig_db_sys_user_password}
+      - ${oig_rcu_schema_prefix}
+      - ${oig_rcu_schema_password}
+      - ${oig_weblogic_domain_user}
+      - ${oig_weblogic_domain_user_password}
+      - ${oig_domain_storage_path}
+      - ${image_docker_registry_url}
+      - ${idmcli_command}
+      - ${wls_operator_object_storage_url}
+
+variables:
+  #  Instance Configuration
+
+  tenancy_ocid:
+    type: string
+    title: Tenancy ID
+    description: The Oracle Cloud Identifier (OCID) for your tenancy
+    required: true
+    visible: false
+
+  region:
+    type: oci:identity:region:name
+    title: Region
+    description: The region in which to create all resources
+    required: true
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    title: Oracle Identity Governance Compartment
+    description: The compartment in which to create the Coherence compute instances
+    required: true
+    visible: false
+
+  compartment_name:
+    type: string
+    title: Compartment Name
+    description: The Compartment Name
+    required: false
+    visible: false
+
+  cluster_name:
+    type: string
+    title: OIG Cluster Name
+    description: Cluster Name
+    required: true
+    default: oigCluster
+    visible: false
+
+  cluster_options_add_ons_is_kubernetes_dashboard_enabled:
+    type: boolean
+    default: true
+    visible: false
+
+  cluster_options_add_ons_is_tiller_enabled:
+    type: boolean
+    default: true
+    visible: false
+
+  cluster_options_kubernetes_network_config_pods_cidr:
+    type: string
+    default: 10.244.0.0/16
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: OKE POD Network CIDR
+    description: This is the CIDR range used for IP addresses by your pods. A /16 CIDR is generally sufficient. This CIDR should not overlap with any subnet range in the VCN (it can also be outside the VCN CIDR range)
+
+  cluster_options_kubernetes_network_config_services_cidr:
+    type: string
+    default: 10.96.0.0/16
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: OKE Service CIDR
+    description: This is the CIDR range used by exposed Kubernetes services (ClusterIPs). This CIDR should not overlap with the VCN CIDR range.
+
+  node_pool_initial_node_labels_key:
+    type: string
+    default: key
+    visible: false
+
+  node_pool_initial_node_labels_value:
+    type: string
+    default: value
+    visible: false
+
+  node_pool_name:
+    type: string
+    default: oigpool
+    visible: true
+
+  #node_pool_node_image_name:
+  #  type: oci:core:image:id
+  #  dependsOn:
+  #    compartmentId: ${compartment_ocid}
+  #  required: true`
+
+  node_pool_node_shape:
+    type: oci:core:instanceshape:name
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    default: VM.Standard1.2
+    required: true
+
+  number_of_nodes:
+    type: integer
+    default: 2
+    minimum: 1
+    maximum: 1000
+    required: true
+
+  lb_cidr:
+    type: string
+    default: 10.0.20.0/24
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    description: cidr block of lb
+
+  nodepools_cidr:
+    type: string
+    default: 10.0.10.0/24
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    description: cidr block of nodepools
+
+  worker_mode:
+    type: string
+    default: private
+    description: whether to provision public or private workers
+    visible: false
+
+  cluster_kube_config_expiration:
+    default: 2592000
+    visible: false
+
+  cluster_kube_config_token_version:
+    default: 2.0.0
+    visible: false
+
+  vcn_dns_label:
+    type: string
+    default: oke
+    visible: false
+
+  vcn_cidr:
+    type: string
+    default: 10.0.0.0/16
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    description: cidr block of VCN
+    visible: false
+
+  newbits:
+    type: map
+    visible: false
+
+  subnets:
+    type: map
+    visible: false
+
+  bastion_shape:
+    type: oci:core:instanceshape:name
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    default: VM.Standard.E2.1
+    required: true
+
+  availability_domains:
+    type: oci:identity:availabilitydomain:name
+    title: Availability Domain
+    description: The name of the availability domain in which to create the service instances
+    required: true
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  helm_version:
+    type: string
+    default:
+    visible: false
+
+  create_bastion:
+    type: boolean
+    default: true
+    visible: false
+
+  install_helm:
+    type: boolean
+    default: true
+    visible: false
+
+  idm_cli_object_storage_url:
+    type: string
+    default:  https://objectstorage.us-ashburn-1.oraclecloud.com/n/idkgvfvqincr/b/bucket-20191115-1123/o/idmcli-unix
+    visible: false
+    required: true
+
+  oig_db_url:
+    type: string
+    required: true
+
+  oig_db_sys_user:
+    type: string
+    required: true
+
+  oig_db_sys_user_password:
+    type: password
+    required: true
+
+  oig_rcu_schema_prefix:
+    type: string
+    required: true
+
+  oig_rcu_schema_password:
+    type: password
+    required: true
+
+  oig_weblogic_domain_user:
+    type: string
+    required: true
+
+  oig_weblogic_domain_user_password:
+    type: password
+    required: true
+
+  oig_domain_storage_path:
+    type: string
+    default: /oig
+    visible: false
+    required: true
+
+  image_docker_registry_url:
+    type: string
+    default: phx.ocir.io/susengdev/qafd/olcne_idm/idmrepo/oracle/oig:12.2.1.4.0-8-ol7-210525.2125
+    visible: false
+    required: true
+
+  idmcli_command:
+    type: string
+    default: install oig k8s --config config/idmcli.yaml
+    visible: false
+    required: true
+
+  operator_image:
+    type: string
+    default: ghcr.io/oracle/weblogic-kubernetes-operator:3.4.2
+    visible: true
+    required: true
+
+  wls_operator_object_storage_url:
+    type: string
+    default: https://objectstorage.us-ashburn-1.oraclecloud.com/n/idkgvfvqincr/b/bucket-orm-Jan2021/o/operator.zip
+    visible: false
+    required: true
+
+  mp_listing_id:
+    type: string
+    default: ''
+    visible: false
+    required: true
+
+  mp_listing_resource_version:
+    type: string
+    default: ''
+    visible: false
+    required: true
+
+  mp_listing_resource_id:
+    type: string
+    default: ''
+    visible: false
+    required: true
+
+  ingressHostName:
+    type: string
+    default: ''
+    visible: false
+    required: true
+
+  show_advanced:
+    type: boolean
+    title: "Show advanced options?"
+    description: "Shows advanced options, allowing enable customer managed encryption keys, select your ssh key, and other advanced options. NOTE: Only encryption and ssh key changes are available as Always Free resources, other advanced options may not be available on the Always Free."
+    visible: true
+
+  generate_public_ssh_key:
+    type: boolean
+    title: "Auto-generate public ssh key?"
+    description: "Auto-generate a public key and assign to the compute instances. Uncheck to provide your own public key."
+    visible:
+      and:
+        - show_advanced
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    title: "SSH Public Key"
+    description: "The public SSH key for the key-pair that you want to use, if you wish to login to the instances over SSH."
+    required: true
+    additionalProps:
+      allowMultiple: true
+    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+    visible:
+      and:
+        - and:
+          - show_advanced
+        - not:
+          - generate_public_ssh_key
