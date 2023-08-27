@@ -126,7 +126,7 @@ variable "availability_domains" {
 
 variable "helm_version" {
   description = "version of helm to install"
-  default     = "3.4.1"
+  default     = "3.11.0"
 }
 
 variable "create_bastion" {
@@ -158,7 +158,7 @@ variable "oig_db_sys_user" {
 
 variable "oig_db_sys_user_password" {
   type    = string
-  default = "Welcome1"
+  default = "G4uJvh09vi3n#_"
 }
 
 variable "oig_rcu_schema_prefix" {
@@ -168,7 +168,7 @@ variable "oig_rcu_schema_prefix" {
 
 variable "oig_rcu_schema_password" {
   type    = string
-  default = "Welcome1"
+  default = "WElcome#_123"
 }
 
 variable "oig_weblogic_domain_user" {
