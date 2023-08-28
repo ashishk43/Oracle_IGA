@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright 2017, 2019, Oracle Corporation and/or affiliates.  All rights reserved.
 # Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl
+# helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 
 wget https://get.helm.sh/helm-v${helm_version}-linux-amd64.tar.gz
 tar -zxvf helm-v${helm_version}-linux-amd64.tar.gz
@@ -11,7 +12,7 @@ chmod 500 ~/.kube/config
 helm repo add stable https://charts.helm.sh/stable
 
 if [ ${add_incubator_repo} ]; then
-  helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+  helm repo add incubator https://charts.helm.sh/incubator
 fi
 
 if [ ${add_jetstack_repo} ]; then
