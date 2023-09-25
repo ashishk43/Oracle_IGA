@@ -126,7 +126,7 @@ variable "availability_domains" {
 
 variable "helm_version" {
   description = "version of helm to install"
-  default     = "3.11.0"
+  default     = "3.4.2"
 }
 
 variable "create_bastion" {
@@ -203,7 +203,7 @@ variable "wls_operator_object_storage_url" {
 
 variable "operator_image" {
   type = string
-  default = "ghcr.io/oracle/weblogic-kubernetes-operator:3.4.2"
+  default = "ghcr.io/oracle/weblogic-kubernetes-operator:3.0.1"
 }
 
 variable "mp_listing_id" {
